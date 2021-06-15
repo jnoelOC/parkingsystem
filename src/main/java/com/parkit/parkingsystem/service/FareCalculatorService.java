@@ -11,7 +11,9 @@ public class FareCalculatorService {
 		}
 
 		int inHour = ticket.getInTime().getHour();
+
 		int outHour = ticket.getOutTime().getHour();
+
 		// System.out.println(inHour);
 		// System.out.println(outHour);
 		int inMinutes = ticket.getInTime().getMinute();
@@ -45,6 +47,10 @@ public class FareCalculatorService {
 		double totalHours = outHour - inHour;
 		double totalMinutes = outMinutes - inMinutes;
 
+		if (totalHours > 0 && totalMinutes < 0) {
+			totalHours -= 1;
+			totalMinutes = Math.abs(totalMinutes);
+		}
 		totalTime = CalculateFreeParkUnder30Minutes(totalMinutes, totalHours, totalDays);
 
 		return totalTime;
