@@ -44,9 +44,23 @@ public class FareCalculatorService {
 		totalDays *= 24; // divide by 24 hours
 		double totalHours = outHour - inHour;
 		double totalMinutes = outMinutes - inMinutes;
-		totalMinutes /= 60; // divide by 60 minutes ( = 1 hour )
 
-		totalTime = totalDays + totalHours + totalMinutes;
+		totalTime = CalculateFreeParkUnder30Minutes(totalMinutes, totalHours, totalDays);
+
+		return totalTime;
+	}
+
+	private double CalculateFreeParkUnder30Minutes(double totalMinutes, double totalHours, double totalDays) {
+		// TODO Auto-generated method stub
+		double totalTime = 0;
+
+		if (totalDays == 0 && totalHours == 0 && totalMinutes < 30) {
+			totalTime = 0; // case where free park under 30 minutes
+		} else {
+			totalMinutes /= 60; // divide by 60 minutes ( = 1 hour )
+			totalTime = totalDays + totalHours + totalMinutes;
+		}
+
 		return totalTime;
 	}
 }
