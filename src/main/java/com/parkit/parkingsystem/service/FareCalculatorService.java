@@ -14,9 +14,14 @@ public class FareCalculatorService {
 		int outHour = ticket.getOutTime().getHour();
 		// System.out.println(inHour);
 		// System.out.println(outHour);
+		int inMinutes = ticket.getInTime().getMinute();
+		int outMinutes = ticket.getOutTime().getMinute();
+		int inDays = ticket.getInTime().getDayOfYear();
+		int outDays = ticket.getOutTime().getDayOfYear();
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
-		int duration = outHour - inHour;
+		// int duration = outHour - inHour;
+		double duration = CalculateTime(inMinutes, outMinutes, inHour, outHour, inDays, outDays);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
@@ -30,5 +35,10 @@ public class FareCalculatorService {
 		default:
 			throw new IllegalArgumentException("Unkown Parking Type");
 		}
+	}
+
+	private double CalculateTime(int inMinutes, int outMinutes, int inHour, int outHour, int inDays, int outDays) {
+		// TODO Auto-generated method stub
+		return 0.75;
 	}
 }
