@@ -47,6 +47,7 @@ public class ParkingService {
 				ticket.setPrice(0);
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
+
 				ticketDAO.saveTicket(ticket);
 				System.out.println("Generated Ticket and saved in DB");
 				System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
@@ -108,6 +109,7 @@ public class ParkingService {
 			LocalDateTime outTime = LocalDateTime.now();
 			// Date outTime = new Date();
 			ticket.setOutTime(outTime);
+
 			fareCalculatorService.calculateFare(ticket);
 			if (ticketDAO.updateTicket(ticket)) {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();

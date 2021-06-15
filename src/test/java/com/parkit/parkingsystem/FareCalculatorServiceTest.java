@@ -32,8 +32,8 @@ public class FareCalculatorServiceTest {
 	@Test
 	public void calculateFareCar() {
 
-		LocalDateTime outTime = LocalDateTime.now();
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime outTime = LocalDateTime.now();
 
 		// Date inTime = new Date();
 		// inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));

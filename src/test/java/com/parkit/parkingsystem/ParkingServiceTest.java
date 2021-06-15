@@ -44,7 +44,7 @@ public class ParkingServiceTest {
 
 			// ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 			// LocalDateTime outTime = LocalDateTime.now();
-			LocalDateTime inTime = LocalDateTime.now();
+			LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 			ticket.setInTime(inTime);
 			/////
 
