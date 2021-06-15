@@ -39,6 +39,14 @@ public class FareCalculatorService {
 
 	private double CalculateTime(int inMinutes, int outMinutes, int inHour, int outHour, int inDays, int outDays) {
 		// TODO Auto-generated method stub
-		return 0.75;
+		double totalTime = 0;
+		double totalDays = outDays - inDays;
+		totalDays *= 24; // divide by 24 hours
+		double totalHours = outHour - inHour;
+		double totalMinutes = outMinutes - inMinutes;
+		totalMinutes /= 60; // divide by 60 minutes ( = 1 hour )
+
+		totalTime = totalDays + totalHours + totalMinutes;
+		return totalTime;
 	}
 }
