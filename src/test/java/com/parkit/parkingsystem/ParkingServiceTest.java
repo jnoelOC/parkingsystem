@@ -42,11 +42,8 @@ public class ParkingServiceTest {
 			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 			Ticket ticket = new Ticket();
 
-			// ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
-			// LocalDateTime outTime = LocalDateTime.now();
 			LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 			ticket.setInTime(inTime);
-			/////
 
 			ticket.setParkingSpot(parkingSpot);
 			ticket.setVehicleRegNumber("ABCDEF");

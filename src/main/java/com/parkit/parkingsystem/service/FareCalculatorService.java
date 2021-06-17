@@ -5,7 +5,7 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
-	public void calculateFare(Ticket ticket) {
+	public void calculateFare(Ticket ticket, boolean isRecurringCustomer) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
@@ -24,11 +24,21 @@ public class FareCalculatorService {
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+			if (isRecurringCustomer == false) {
+				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+			} else // case where customer is recurring for 5% discount
+			{
+				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * (1 - 0.05));
+			}
 			break;
 		}
 		case BIKE: {
-			ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+			if (isRecurringCustomer == false) {
+				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+			} else // case where customer is recurring for 5% discount
+			{
+				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * (1 - 0.05));
+			}
 			break;
 		}
 		default:

@@ -1,10 +1,14 @@
 package com.parkit.parkingsystem.service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -22,6 +26,9 @@ public class ParkingService {
 	private ParkingSpotDAO parkingSpotDAO;
 	private TicketDAO ticketDAO;
 
+	// check if customer is recurring in order to calculate 5% discount
+	private boolean isRecurringCustomer = false;
+
 	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO) {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
@@ -33,12 +40,15 @@ public class ParkingService {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehichleRegNumber();
+
+				// if true then calculate 5% discount
+				isRecurringCustomer = VerifyExistenceOfVehicleRegNumber(vehicleRegNumber);
+
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
 
 				LocalDateTime inTime = LocalDateTime.now();
-				// Date inTime = new Date();
 				Ticket ticket = new Ticket();
 				// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 				// ticket.setId(ticketID);
@@ -61,6 +71,49 @@ public class ParkingService {
 	private String getVehichleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
+	}
+
+	private boolean VerifyExistenceOfVehicleRegNumber(String vehicleRegNumber) {
+		boolean vehicleRegNumberExists = false;
+		DataBaseConfig dataBaseConfig = new DataBaseConfig();
+		Connection con = null;
+
+		// connect to database
+		// verify if vehicleRegNumber exists in database
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(
+					// "select t.VEHICLE_REG_NUMBER from ticket t having count(t.VEHICLE_REG_NUMBER)
+					// > 1");
+					// "select count(t.VEHICLE_REG_NUMBER) from ticket t where"
+					// + " t.VEHICLE_REG_NUMBER=''" + vehicleRegNumber + "'");
+					// "select t.VEHICLE_REG_NUMBER from ticket t where t.VEHICLE_REG_NUMBER=" +
+					// vehicleRegNumber);
+
+					"select t.VEHICLE_REG_NUMBER from ticket t where t.VEHICLE_REG_NUMBER='" + vehicleRegNumber + "'");
+
+			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				String val = rs.getString(1);
+				if (val.equals(vehicleRegNumber)) {
+					vehicleRegNumberExists = true;
+				}
+			}
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
+		} catch (Exception ex) {
+			logger.error("Error fetching next available slot : ", ex.getMessage());
+		} finally {
+			dataBaseConfig.closeConnection(con);
+		}
+
+		if (vehicleRegNumberExists == true) {
+			System.out.println(
+					"Welcome back ! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+		}
+
+		return vehicleRegNumberExists;
 	}
 
 	public ParkingSpot getNextParkingNumberIfAvailable() {
@@ -107,10 +160,11 @@ public class ParkingService {
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
 			LocalDateTime outTime = LocalDateTime.now();
-			// Date outTime = new Date();
+
 			ticket.setOutTime(outTime);
 
-			fareCalculatorService.calculateFare(ticket);
+			fareCalculatorService.calculateFare(ticket, isRecurringCustomer);
+
 			if (ticketDAO.updateTicket(ticket)) {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
