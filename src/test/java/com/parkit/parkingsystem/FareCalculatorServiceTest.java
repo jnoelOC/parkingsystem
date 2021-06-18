@@ -154,31 +154,61 @@ public class FareCalculatorServiceTest {
 	///////////////////////////// My Tests
 
 	@Test
-	public void calculateFreeFareBikeWithLessThan30MinutesParkingTime() {
+	public void calculateFreeFareNotRecurringBikeWithLessThan30MinutesParkingTime() {
 
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(29);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
-
+		boolean vehicleRegNumberExists = false;
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, false);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((0 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
 	@Test
-	public void calculateFreeFareCarWithLessThan30MinutesParkingTime() {
+	public void calculateFreeFareNotRecurringCarWithLessThan30MinutesParkingTime() {
 
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(29);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-
+		boolean vehicleRegNumberExists = false;
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, false);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateFreeFareRecurringBikeWithLessThan30MinutesParkingTime() {
+
+		LocalDateTime inTime = LocalDateTime.now().minusMinutes(29);
+		LocalDateTime outTime = LocalDateTime.now();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		boolean vehicleRegNumberExists = true;
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((0 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateFreeFareRecurringCarWithLessThan30MinutesParkingTime() {
+
+		LocalDateTime inTime = LocalDateTime.now().minusMinutes(29);
+		LocalDateTime outTime = LocalDateTime.now();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+		boolean vehicleRegNumberExists = true;
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
@@ -189,11 +219,11 @@ public class FareCalculatorServiceTest {
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(30);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
-
+		boolean vehicleRegNumberExists = false;
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, false);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((0.5 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
@@ -204,11 +234,11 @@ public class FareCalculatorServiceTest {
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(30);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-
+		boolean vehicleRegNumberExists = false;
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, false);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((0.5 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
@@ -219,11 +249,11 @@ public class FareCalculatorServiceTest {
 		LocalDateTime inTime = LocalDateTime.now().minusHours(10);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-
+		boolean vehicleRegNumberExists = true;
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, true);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((9.5 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
@@ -234,13 +264,46 @@ public class FareCalculatorServiceTest {
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
 		LocalDateTime outTime = LocalDateTime.now();
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		boolean vehicleRegNumberExists = true;
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((0.95 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateFareNotRecurringCarWithout5PercentDiscount() {
+
+		LocalDateTime inTime = LocalDateTime.now().minusHours(10);
+		LocalDateTime outTime = LocalDateTime.now();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+		boolean vehicleRegNumberExists = false;
 
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		fareCalculatorService.calculateFare(ticket, true);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
-		assertEquals((0.95 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+		assertEquals((10 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateFareNotRecurringBikeWithout5PercentDiscount() {
+
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		LocalDateTime outTime = LocalDateTime.now();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		boolean vehicleRegNumberExists = false;
+
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((1 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
 }
