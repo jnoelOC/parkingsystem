@@ -5,15 +5,20 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
-	public void calculateFare(Ticket ticket) {
+	public void calculateFare(Ticket ticket, boolean isRecurringCustomer) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
+		// Duration.between(startLocalDateTime, endLocalDateTime).toMillis();
+//		String.format("%d minutes %d seconds", 
+//				  TimeUnit.MILLISECONDS.toMinutes(millis),
+//				  TimeUnit.MILLISECONDS.toSeconds(millis) - 
+//				  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
 		int inHour = ticket.getInTime().getHour();
 		int outHour = ticket.getOutTime().getHour();
-		// System.out.println(inHour);
-		// System.out.println(outHour);
+
 		int inMinutes = ticket.getInTime().getMinute();
 		int outMinutes = ticket.getOutTime().getMinute();
 		int inDays = ticket.getInTime().getDayOfYear();
@@ -25,11 +30,21 @@ public class FareCalculatorService {
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+			if (isRecurringCustomer == false) {
+				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+			} else // case where customer is recurring for 5% discount
+			{
+				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * (1 - 0.05));
+			}
 			break;
 		}
 		case BIKE: {
-			ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+			if (isRecurringCustomer == false) {
+				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+			} else // case where customer is recurring for 5% discount
+			{
+				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * (1 - 0.05));
+			}
 			break;
 		}
 		default:
@@ -44,6 +59,11 @@ public class FareCalculatorService {
 		totalDays *= 24; // divide by 24 hours
 		double totalHours = outHour - inHour;
 		double totalMinutes = outMinutes - inMinutes;
+
+		if (totalHours > 0 && totalMinutes < 0) {
+			totalHours -= 1;
+			totalMinutes = 60 - Math.abs(totalMinutes);
+		}
 
 		totalTime = CalculateFreeParkUnder30Minutes(totalMinutes, totalHours, totalDays);
 

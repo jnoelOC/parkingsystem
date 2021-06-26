@@ -63,8 +63,6 @@ public class TicketDAO {
 				ticket.setId(rs.getInt(2));
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
-				// ticket.setInTime(rs.getTimestamp(4));
-				// ticket.setOutTime(rs.getTimestamp(5));
 
 				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
 				// ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
