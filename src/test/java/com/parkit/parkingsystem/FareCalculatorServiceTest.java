@@ -306,4 +306,35 @@ public class FareCalculatorServiceTest {
 		assertEquals((1 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	@Test
+	public void calculateFareNotRecurringCarWithGreatTime() {
+
+		LocalDateTime inTime = LocalDateTime.MIN;
+		LocalDateTime outTime = LocalDateTime.MAX;
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+		boolean vehicleRegNumberExists = false;
+
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((8759.983333333334 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	@Test
+	public void calculateFareNotRecurringBikeWithGreatTime() {
+
+		LocalDateTime inTime = LocalDateTime.MIN;
+		LocalDateTime outTime = LocalDateTime.MAX;
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		boolean vehicleRegNumberExists = false;
+
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
+
+		assertEquals((8759.983333333334 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+	}
 }

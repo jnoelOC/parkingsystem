@@ -55,7 +55,7 @@
 		    <version>3.13.2</version>
 		    <scope>test</scope>
 		</dependency>
-        
+
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
