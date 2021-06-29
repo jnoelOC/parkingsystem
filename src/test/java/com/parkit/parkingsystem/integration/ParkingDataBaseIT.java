@@ -63,9 +63,9 @@ public class ParkingDataBaseIT {
 
 	@Test
 	public void testParkingACar() {
-//ARRANGE
+		// ARRANGE
 
-// ACT
+		// ACT
 		parkingService.processIncomingVehicle();
 		// DONE: check that a ticket is actually saved in DB and Parking table is
 		// updated with availability
@@ -73,22 +73,22 @@ public class ParkingDataBaseIT {
 		Ticket ticket = databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
 		boolean isAvailabilityUpdatedInDB = databasePrepareServiceParkingDao.updateAParkingSlot(false, 1);
 
-//ASSERT
+		// ASSERT
 		assertEquals(1, ticket.getId());
 		assertTrue(isAvailabilityUpdatedInDB);
 	}
 
 	@Test
 	public void testParkingLotExit() {
-//ARRANGE
-//ACT
+		// ARRANGE
+		// ACT
 		testParkingACar();
 		parkingService.processExitingVehicle();
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
 		boolean isFareAndOutTimeUpdatedInDB = true;
 
-// ASSERT
+		// ASSERT
 		assertTrue(isFareAndOutTimeUpdatedInDB);
 
 	}

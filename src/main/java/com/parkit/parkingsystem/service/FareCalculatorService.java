@@ -1,5 +1,8 @@
 package com.parkit.parkingsystem.service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -10,41 +13,35 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
-		// Duration.between(startLocalDateTime, endLocalDateTime).toMillis();
-//		String.format("%d minutes %d seconds", 
-//				  TimeUnit.MILLISECONDS.toMinutes(millis),
-//				  TimeUnit.MILLISECONDS.toSeconds(millis) - 
-//				  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+//		int inHour = ticket.getInTime().get(null);
+//		int outHour = ticket.getOutTime().getHour();
 
-		int inHour = ticket.getInTime().getHour();
-		int outHour = ticket.getOutTime().getHour();
+		LocalDateTime inTime = ticket.getInTime();
+		LocalDateTime outTime = ticket.getOutTime();
 
-		int inMinutes = ticket.getInTime().getMinute();
-		int outMinutes = ticket.getOutTime().getMinute();
-		int inDays = ticket.getInTime().getDayOfYear();
-		int outDays = ticket.getOutTime().getDayOfYear();
+		double minutesRatio = 0;
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
 		// int duration = outHour - inHour;
-		double duration = CalculateTime(inMinutes, outMinutes, inHour, outHour, inDays, outDays);
+		Duration duration = CalculateTime(inTime, outTime);
+
+		double reduction = CalculateReduction(duration, isRecurringCustomer);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			if (isRecurringCustomer == false) {
-				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-			} else // case where customer is recurring for 5% discount
-			{
-				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * (1 - 0.05));
-			}
+
+			minutesRatio = ((double) duration.toMinutes()) / 60;
+			ticket.setPrice(((duration.toHours() > 0) ? duration.toHours() : minutesRatio) * Fare.CAR_RATE_PER_HOUR
+					* reduction);
+
 			break;
 		}
 		case BIKE: {
-			if (isRecurringCustomer == false) {
-				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-			} else // case where customer is recurring for 5% discount
-			{
-				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * (1 - 0.05));
-			}
+
+			minutesRatio = ((double) duration.toMinutes()) / 60;
+			ticket.setPrice(((duration.toHours() > 0) ? duration.toHours() : minutesRatio) * Fare.BIKE_RATE_PER_HOUR
+					* reduction);
+
 			break;
 		}
 		default:
@@ -52,35 +49,33 @@ public class FareCalculatorService {
 		}
 	}
 
-	private double CalculateTime(int inMinutes, int outMinutes, int inHour, int outHour, int inDays, int outDays) {
-		// TODO Auto-generated method stub
-		double totalTime = 0;
-		double totalDays = outDays - inDays;
-		totalDays *= 24; // divide by 24 hours
-		double totalHours = outHour - inHour;
-		double totalMinutes = outMinutes - inMinutes;
+	private double CalculateReduction(Duration duration, boolean isRecurringCustomer) {
+		double reduc = 1; // without reduction
 
-		if (totalHours > 0 && totalMinutes < 0) {
-			totalHours -= 1;
-			totalMinutes = 60 - Math.abs(totalMinutes);
-		}
-
-		totalTime = CalculateFreeParkUnder30Minutes(totalMinutes, totalHours, totalDays);
-
-		return totalTime;
-	}
-
-	private double CalculateFreeParkUnder30Minutes(double totalMinutes, double totalHours, double totalDays) {
-		// TODO Auto-generated method stub
-		double totalTime = 0;
-
-		if (totalDays == 0 && totalHours == 0 && totalMinutes < 30) {
-			totalTime = 0; // case where free park under 30 minutes
+		if (duration.toMinutes() < 30) { // FreeParkUnder30Minutes
+			reduc = 0;
 		} else {
-			totalMinutes /= 60; // divide by 60 minutes ( = 1 hour )
-			totalTime = totalDays + totalHours + totalMinutes;
+			if (isRecurringCustomer == true) { // 5% discount for recurring customer
+				reduc = 0.95;
+			}
 		}
 
-		return totalTime;
+		return reduc;
 	}
+
+	private Duration CalculateTime(LocalDateTime inTime, LocalDateTime outTime) {
+		// TODO Auto-generated method stub
+		Duration duration;
+
+		duration = Duration.between(inTime, outTime);
+
+		// Duration.between(startLocalDateTime, endLocalDateTime).toMillis();
+//		String.format("%d minutes %d seconds", 
+//				  TimeUnit.MILLISECONDS.toMinutes(millis),
+//				  TimeUnit.MILLISECONDS.toSeconds(millis) - 
+//				  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
+		return duration;
+	}
+
 }
