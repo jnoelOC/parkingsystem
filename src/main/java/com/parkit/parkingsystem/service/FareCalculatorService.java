@@ -13,16 +13,11 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
-//		int inHour = ticket.getInTime().get(null);
-//		int outHour = ticket.getOutTime().getHour();
-
 		LocalDateTime inTime = ticket.getInTime();
 		LocalDateTime outTime = ticket.getOutTime();
 
 		double minutesRatio = 0;
 
-		// TODO: Some tests are failing here. Need to check if this logic is correct
-		// int duration = outHour - inHour;
 		Duration duration = CalculateTime(inTime, outTime);
 
 		double reduction = CalculateReduction(duration, isRecurringCustomer);
@@ -49,7 +44,7 @@ public class FareCalculatorService {
 		}
 	}
 
-	private double CalculateReduction(Duration duration, boolean isRecurringCustomer) {
+	public double CalculateReduction(Duration duration, boolean isRecurringCustomer) {
 		double reduc = 1; // without reduction
 
 		if (duration.toMinutes() < 30) { // FreeParkUnder30Minutes
@@ -63,17 +58,10 @@ public class FareCalculatorService {
 		return reduc;
 	}
 
-	private Duration CalculateTime(LocalDateTime inTime, LocalDateTime outTime) {
-		// TODO Auto-generated method stub
+	public Duration CalculateTime(LocalDateTime inTime, LocalDateTime outTime) {
 		Duration duration;
 
 		duration = Duration.between(inTime, outTime);
-
-		// Duration.between(startLocalDateTime, endLocalDateTime).toMillis();
-//		String.format("%d minutes %d seconds", 
-//				  TimeUnit.MILLISECONDS.toMinutes(millis),
-//				  TimeUnit.MILLISECONDS.toSeconds(millis) - 
-//				  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 
 		return duration;
 	}

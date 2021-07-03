@@ -3,11 +3,16 @@ package com.parkit.parkingsystem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -338,5 +343,28 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket, vehicleRegNumberExists);
 
 		assertEquals((1.7531639991215E13 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+	}
+
+	//////////// MY PARAMETERIZED TESTS
+
+	@ParameterizedTest
+	@MethodSource("com.parkit.parkingsystem.DurationAndBooleanProviders#durationAndBoolean")
+	public void CalculateReductionTest_ShouldReturn1(Duration duration, boolean isRecurringCustomer) {
+
+		// assertEquals(0.95, fareCalculatorService.CalculateReduction(duration,
+		// isRecurringCustomer));
+		assertEquals(1, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+//	public Duration[] durationData() {
+//		return new Duration[] { Duration.ofHours(1), Duration.ofHours(10) };
+//	}
+//	// { Duration.ZERO, Duration.ofHours(1), Duration.ofHours(Integer.MAX_VALUE) };
+}
+
+class DurationAndBooleanProviders {
+	static Stream<Arguments> durationAndBoolean() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(30), false), Arguments.of(Duration.ofHours(1), false),
+				Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
 	}
 }

@@ -18,6 +18,10 @@ public class DatabasePrepareServiceTicketDao {
 
 	private static final Logger logger = LogManager.getLogger("DatabasePrepareServiceTicketDao");
 	public static final String GET_TICKET_TEST = "select t.PARKING_NUMBER, t.ID, t.PRICE, t.IN_TIME, t.OUT_TIME, p.TYPE from ticket t,parking p where p.PARKING_NUMBER = t.PARKING_NUMBER and t.VEHICLE_REG_NUMBER=? order by t.IN_TIME DESC limit 1";
+	public static final String GET_FARE_AND_OUTTIME_TEST = "select t.PRICE, t.OUT_TIME from ticket t where t.VEHICLE_REG_NUMBER=? order by t.IN_TIME DESC limit 1";
+	// public static final String UPDATE_TICKET_TEST = "update ticket set PRICE=?,
+	// OUT_TIME=? where ID=?";
+	public static final String SAVE_TICKET_TEST = "insert into ticket(PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME) values(?,?,?,?,?)";
 
 	private DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
@@ -42,7 +46,7 @@ public class DatabasePrepareServiceTicketDao {
 				ticket.setInTime(LocalDateTime.of(rs.getDate(4).toLocalDate(), rs.getTime(4).toLocalTime()));
 			}
 		} catch (SQLException sqlEx) {
-			logger.error("Error SQL fetching ", sqlEx);
+			logger.error("Error SQL ", sqlEx);
 
 		} catch (NullPointerException npEx) {
 			logger.error("Error Null pointer ", npEx);
@@ -57,6 +61,44 @@ public class DatabasePrepareServiceTicketDao {
 		}
 
 		return ticket;
+	}
+
+	public boolean getUpdatingFareAndOutTimeFromDBTest(String vehicleRegNb) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		boolean areTheyUpdated = false;
+		try {
+			con = dataBaseTestConfig.getConnection();
+			ps = con.prepareStatement(GET_FARE_AND_OUTTIME_TEST);
+			ps.setString(1, vehicleRegNb);
+
+			rs = ps.executeQuery();
+			if (rs.next()) {
+
+				System.out.println("the fare generated and out time are populated correctly in the database "
+						+ rs.getDouble(1) + " et " + rs.getTimestamp(2));
+				areTheyUpdated = true;
+			} else {
+				System.out.println("the fare generated and out time aren't populated correctly in the database");
+			}
+		} catch (SQLException sqlEx) {
+			logger.error("Error SQL ", sqlEx);
+
+		} catch (NullPointerException npEx) {
+			logger.error("Error Null pointer ", npEx);
+
+		} catch (Exception ex) {
+			logger.error("Error fetching ", ex);
+
+		} finally {
+			dataBaseTestConfig.closePreparedStatement(ps);
+			dataBaseTestConfig.closeResultSet(rs);
+			dataBaseTestConfig.closeConnection(con);
+		}
+
+		return areTheyUpdated;
 	}
 
 }

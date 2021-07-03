@@ -31,6 +31,7 @@ public class ParkingDataBaseIT {
 	private static DataBasePrepareService dataBasePrepareService;
 	private static DatabasePrepareServiceTicketDao databasePrepareServiceTicketDao;
 	private static DatabasePrepareServiceParkingDao databasePrepareServiceParkingDao;
+
 	// To be tested
 	private ParkingService parkingService;
 
@@ -86,8 +87,13 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
-		boolean isFareAndOutTimeUpdatedInDB = true;
+		// Ticket ticket =
+		// databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
+//		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao
+//				.getFareAndOutTimeFromDBTest(ticket.getId(), ticket.getPrice(), ticket.getOutTime());
 
+		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao
+				.getUpdatingFareAndOutTimeFromDBTest("ABCDEF");
 		// ASSERT
 		assertTrue(isFareAndOutTimeUpdatedInDB);
 
