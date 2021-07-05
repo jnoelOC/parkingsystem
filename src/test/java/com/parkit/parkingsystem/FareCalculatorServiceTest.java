@@ -345,26 +345,69 @@ public class FareCalculatorServiceTest {
 		assertEquals((1.7531639991215E13 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
-	//////////// MY PARAMETERIZED TESTS
+	//////////// MY PARAMETERIZED TESTS : calculateReduction()
 
 	@ParameterizedTest
-	@MethodSource("com.parkit.parkingsystem.DurationAndBooleanProviders#durationAndBoolean")
+	@MethodSource("com.parkit.parkingsystem.DurationAndBooleanProviders1#durationAndBoolean1")
 	public void CalculateReductionTest_ShouldReturn1(Duration duration, boolean isRecurringCustomer) {
 
-		// assertEquals(0.95, fareCalculatorService.CalculateReduction(duration,
-		// isRecurringCustomer));
 		assertEquals(1, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
 	}
 
-//	public Duration[] durationData() {
-//		return new Duration[] { Duration.ofHours(1), Duration.ofHours(10) };
-//	}
-//	// { Duration.ZERO, Duration.ofHours(1), Duration.ofHours(Integer.MAX_VALUE) };
+	@ParameterizedTest
+	@MethodSource("com.parkit.parkingsystem.DurationAndBooleanProviders0#durationAndBoolean0")
+	public void CalculateReductionTest_ShouldReturn0(Duration duration, boolean isRecurringCustomer) {
+
+		assertEquals(0, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+	@ParameterizedTest
+	@MethodSource("com.parkit.parkingsystem.DurationAndBooleanProviders095#durationAndBoolean095")
+	public void CalculateReductionTest_ShouldReturn095(Duration duration, boolean isRecurringCustomer) {
+
+		assertEquals(0.95, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+	//////////// MY PARAMETERIZED TESTS : calculateTime()
+
+	@ParameterizedTest
+	@MethodSource("com.parkit.parkingsystem.LocalDateTimeProviders#LoDaTi")
+	public void CalculateTimeTest_ShouldReturn0Time(LocalDateTime ldt1, LocalDateTime ldt2) {
+
+		Duration dur = fareCalculatorService.CalculateTime(ldt1, ldt2);
+		assertEquals(Duration.ZERO, dur);
+
+	}
 }
 
-class DurationAndBooleanProviders {
-	static Stream<Arguments> durationAndBoolean() {
+class LocalDateTimeProviders {
+	static Stream<Arguments> LoDaTi() {
+		return Stream.of(Arguments.of(LocalDateTime.now(), LocalDateTime.now()),
+		// return a great figure of duration
+//				Arguments.of(LocalDateTime.of(LocalDate.MIN, LocalTime.MIN),
+//						LocalDateTime.of(LocalDate.MAX, LocalTime.MAX)),
+				Arguments.of(LocalDateTime.MIN, LocalDateTime.MIN), Arguments.of(LocalDateTime.MAX, LocalDateTime.MAX));
+	}
+}
+
+class DurationAndBooleanProviders1 {
+	static Stream<Arguments> durationAndBoolean1() {
 		return Stream.of(Arguments.of(Duration.ofMinutes(30), false), Arguments.of(Duration.ofHours(1), false),
-				Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
+				Arguments.of(Duration.ofHours(10), false), Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
+	}
+}
+
+class DurationAndBooleanProviders0 {
+	static Stream<Arguments> durationAndBoolean0() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(1), false), Arguments.of(Duration.ofMinutes(29), false),
+				Arguments.of(Duration.ZERO, false), Arguments.of(Duration.ofHours(Integer.MIN_VALUE), false));
+	}
+}
+
+class DurationAndBooleanProviders095 {
+	static Stream<Arguments> durationAndBoolean095() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(30), true), Arguments.of(Duration.ofHours(123), true),
+				// Arguments.of(Duration.ofHours(Long.MAX_VALUE), true), ERROR
+				Arguments.of(Duration.ofHours(Integer.MAX_VALUE), true));
 	}
 }
