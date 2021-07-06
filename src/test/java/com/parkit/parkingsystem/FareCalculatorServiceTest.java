@@ -2,12 +2,20 @@ package com.parkit.parkingsystem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -339,4 +347,120 @@ public class FareCalculatorServiceTest {
 
 		assertEquals((1.7531639991215E13 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
+
+	//////////////////////////////////////////////////////////
+	//////////// MY PARAMETERIZED TESTS : calculateReduction()
+
+	@ParameterizedTest
+	@MethodSource("durationAndBooleanReturn1WithoutReduction")
+	public void CalculateReductionTest_ShouldReturn1(Duration duration, boolean isRecurringCustomer) {
+
+		assertEquals(1, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+	// with its data
+	private static Stream<Arguments> durationAndBooleanReturn1WithoutReduction() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(30), false), Arguments.of(Duration.ofHours(1), false),
+				Arguments.of(Duration.ofHours(10), false), Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
+	}
+
+	@ParameterizedTest
+	@MethodSource("durationAndBooleanReturn0WithFreeParkUnder30Min")
+	public void CalculateReductionTest_ShouldReturn0(Duration duration, boolean isRecurringCustomer) {
+
+		assertEquals(0, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+	// with its data
+	private static Stream<Arguments> durationAndBooleanReturn0WithFreeParkUnder30Min() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(1), false), Arguments.of(Duration.ofMinutes(29), false),
+				Arguments.of(Duration.ZERO, false), Arguments.of(Duration.ofHours(Integer.MIN_VALUE), false));
+	}
+
+	@ParameterizedTest
+	@MethodSource("durationAndBooleanReturn095With5PercentDiscount")
+	public void CalculateReductionTest_ShouldReturn095(Duration duration, boolean isRecurringCustomer) {
+
+		assertEquals(0.95, fareCalculatorService.CalculateReduction(duration, isRecurringCustomer));
+	}
+
+	// with its data
+	private static Stream<Arguments> durationAndBooleanReturn095With5PercentDiscount() {
+		return Stream.of(Arguments.of(Duration.ofMinutes(30), true), Arguments.of(Duration.ofHours(123), true),
+				Arguments.of(Duration.ofHours(Integer.MAX_VALUE), true));
+	}
+	//////////// MY PARAMETERIZED TESTS : calculateTime()
+
+	@ParameterizedTest
+	@MethodSource("LocalDateTime1")
+	public void CalculateTimeTest_ShouldReturn0Time(LocalDateTime ldt1, LocalDateTime ldt2) {
+
+		Duration dur = fareCalculatorService.CalculateTime(ldt1, ldt2);
+		assertEquals(Duration.ZERO, dur);
+	}
+
+	// with its data
+	private static Stream<Arguments> LocalDateTime1() {
+		return Stream.of(Arguments.of(LocalDateTime.now(), LocalDateTime.now()),
+				Arguments.of(LocalDateTime.of(LocalDate.MIN, LocalTime.MIN),
+						LocalDateTime.of(LocalDate.MIN, LocalTime.MIN)),
+				Arguments.of(LocalDateTime.MIN, LocalDateTime.MIN), Arguments.of(LocalDateTime.MAX, LocalDateTime.MAX));
+	}
+
+	@ParameterizedTest
+	@MethodSource("LocalDateTime2")
+	public void CalculateTimeTest_ShouldReturnNegativeTime(LocalDateTime ldt1, LocalDateTime ldt2) {
+
+		Duration dur = fareCalculatorService.CalculateTime(ldt1, ldt2);
+		assertTrue(dur.isNegative());
+	}
+
+	// with its data
+	private static Stream<Arguments> LocalDateTime2() {
+		return Stream.of(Arguments.of(LocalDateTime.MAX, LocalDateTime.MIN),
+				Arguments.of(LocalDateTime.MAX, LocalDateTime.now()),
+				Arguments.of(LocalDateTime.now(), LocalDateTime.MIN));
+	}
+
 }
+
+// CalculateTime
+//class LocalDateTimeProviders2 {
+//	static Stream<Arguments> LoDaTi2() {
+//		return Stream.of(Arguments.of(LocalDateTime.MAX, LocalDateTime.MIN),
+//				Arguments.of(LocalDateTime.MAX, LocalDateTime.now()),
+//				Arguments.of(LocalDateTime.now(), LocalDateTime.MIN));
+//	}
+//}
+
+//class LocalDateTimeProviders1 {
+//	static Stream<Arguments> LoDaTi1() {
+//		return Stream.of(Arguments.of(LocalDateTime.now(), LocalDateTime.now()),
+//				Arguments.of(LocalDateTime.of(LocalDate.MIN, LocalTime.MIN),
+//						LocalDateTime.of(LocalDate.MIN, LocalTime.MIN)),
+//				Arguments.of(LocalDateTime.MIN, LocalDateTime.MIN), Arguments.of(LocalDateTime.MAX, LocalDateTime.MAX));
+//	}
+//
+//}
+
+// CalculateReduction
+//class DurationAndBooleanProviders1 {
+//	private static Stream<Arguments> durationAndBoolean1() {
+//		return Stream.of(Arguments.of(Duration.ofMinutes(30), false), Arguments.of(Duration.ofHours(1), false),
+//				Arguments.of(Duration.ofHours(10), false), Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
+//	}
+//}
+
+//class DurationAndBooleanProviders0 {
+//	static Stream<Arguments> durationAndBoolean0() {
+//		return Stream.of(Arguments.of(Duration.ofMinutes(1), false), Arguments.of(Duration.ofMinutes(29), false),
+//				Arguments.of(Duration.ZERO, false), Arguments.of(Duration.ofHours(Integer.MIN_VALUE), false));
+//	}
+//}
+
+//class DurationAndBooleanProviders095 {
+//	static Stream<Arguments> durationAndBoolean095() {
+//		return Stream.of(Arguments.of(Duration.ofMinutes(30), true), Arguments.of(Duration.ofHours(123), true),
+//				Arguments.of(Duration.ofHours(Integer.MAX_VALUE), true));
+//	}
+//}

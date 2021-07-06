@@ -17,7 +17,9 @@ import com.parkit.parkingsystem.model.Ticket;
 public class DatabasePrepareServiceTicketDao {
 
 	private static final Logger logger = LogManager.getLogger("DatabasePrepareServiceTicketDao");
+
 	public static final String GET_TICKET_TEST = "select t.PARKING_NUMBER, t.ID, t.PRICE, t.IN_TIME, t.OUT_TIME, p.TYPE from ticket t,parking p where p.PARKING_NUMBER = t.PARKING_NUMBER and t.VEHICLE_REG_NUMBER=? order by t.IN_TIME DESC limit 1";
+	public static final String UPDATE_PARKING_SPOT_TEST = "update parking set AVAILABLE = ? where PARKING_NUMBER = ?";
 
 	private DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
@@ -42,7 +44,7 @@ public class DatabasePrepareServiceTicketDao {
 				ticket.setInTime(LocalDateTime.of(rs.getDate(4).toLocalDate(), rs.getTime(4).toLocalTime()));
 			}
 		} catch (SQLException sqlEx) {
-			logger.error("Error SQL fetching ", sqlEx);
+			logger.error("Error SQL ", sqlEx);
 
 		} catch (NullPointerException npEx) {
 			logger.error("Error Null pointer ", npEx);
@@ -57,6 +59,46 @@ public class DatabasePrepareServiceTicketDao {
 		}
 
 		return ticket;
+	}
+
+	public boolean getUpdatingFareAndOutTimeFromDBTest(boolean available, int parkNumber) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer result = 0;
+		boolean areTheySaved = true;
+
+		try {
+			con = dataBaseTestConfig.getConnection();
+			ps = con.prepareStatement(UPDATE_PARKING_SPOT_TEST);
+			ps.setBoolean(1, available);
+			ps.setInt(2, parkNumber);
+
+			// result = ps.executeUpdate();
+			ps.execute();
+//			if (result > 0) {
+//
+//				System.out.println("the fare generated and out time are populated correctly in the database");
+//				areTheySaved = true;
+//			} else {
+//				System.out.println("the fare generated and out time aren't populated correctly in the database");
+//			}
+		} catch (SQLException sqlEx) {
+			logger.error("Error SQL ", sqlEx);
+
+		} catch (NullPointerException npEx) {
+			logger.error("Error Null pointer ", npEx);
+
+		} catch (Exception ex) {
+			logger.error("Error fetching ", ex);
+
+		} finally {
+			dataBaseTestConfig.closePreparedStatement(ps);
+			dataBaseTestConfig.closeResultSet(rs);
+			dataBaseTestConfig.closeConnection(con);
+		}
+
+		return areTheySaved;
 	}
 
 }
