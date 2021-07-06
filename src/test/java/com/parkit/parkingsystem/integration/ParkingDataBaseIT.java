@@ -72,11 +72,11 @@ public class ParkingDataBaseIT {
 		// updated with availability
 
 		Ticket ticket = databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
-		boolean isAvailabilityUpdatedInDB = databasePrepareServiceParkingDao.updateAParkingSlot(false, 1);
+		boolean isAvailabilitySavedInDB = databasePrepareServiceParkingDao.saveAParkingSlot(ticket);
 
 		// ASSERT
 		assertEquals(1, ticket.getId());
-		assertTrue(isAvailabilityUpdatedInDB);
+		assertTrue(isAvailabilitySavedInDB);
 	}
 
 	@Test
@@ -84,16 +84,14 @@ public class ParkingDataBaseIT {
 		// ARRANGE
 		// ACT
 		testParkingACar();
-		parkingService.processExitingVehicle();
+		Ticket ticket1 = parkingService.processExitingVehicle();
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
-		// Ticket ticket =
-		// databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
-//		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao
-//				.getFareAndOutTimeFromDBTest(ticket.getId(), ticket.getPrice(), ticket.getOutTime());
 
-		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao
-				.getUpdatingFareAndOutTimeFromDBTest("ABCDEF");
+//		System.out.println("le in et le out time: " + ticket1.getInTime() + " " + ticket1.getOutTime()
+//				+ " et le vehicle Reg nb : " + ticket1.getVehicleRegNumber());
+		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao.getUpdatingFareAndOutTimeFromDBTest(false,
+				1);
 		// ASSERT
 		assertTrue(isFareAndOutTimeUpdatedInDB);
 

@@ -45,12 +45,14 @@ public class FareCalculatorService {
 	}
 
 	public double CalculateReduction(Duration duration, boolean isRecurringCustomer) {
-		double reduc = 1; // without reduction
-
-		if (duration.toMinutes() < 30) { // FreeParkUnder30Minutes
+		// without reduction
+		double reduc = 1;
+		// FreeParkUnder30Minutes
+		if (duration.toMinutes() < 30) {
 			reduc = 0;
 		} else {
-			if (isRecurringCustomer == true) { // 5% discount for recurring customer
+			// 5% discount for recurring customer
+			if (isRecurringCustomer == true) {
 				reduc = 0.95;
 			}
 		}
