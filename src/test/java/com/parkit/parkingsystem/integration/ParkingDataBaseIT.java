@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +25,7 @@ import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
 @ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodName.class)
 public class ParkingDataBaseIT {
 
 	private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
@@ -72,7 +75,8 @@ public class ParkingDataBaseIT {
 		// updated with availability
 
 		Ticket ticket = databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
-		boolean isAvailabilitySavedInDB = databasePrepareServiceParkingDao.saveAParkingSlot(ticket);
+
+		boolean isAvailabilitySavedInDB = databasePrepareServiceParkingDao.getAvailabilityOfAParkingSlot(ticket);
 
 		// ASSERT
 		assertEquals(1, ticket.getId());
@@ -82,16 +86,14 @@ public class ParkingDataBaseIT {
 	@Test
 	public void testParkingLotExit() {
 		// ARRANGE
+		parkingService.processIncomingVehicle();
 		// ACT
-		testParkingACar();
 		Ticket ticket1 = parkingService.processExitingVehicle();
-		// TODO: check that the fare generated and out time are populated correctly in
+		// DONE: check that the fare generated and out time are populated correctly in
 		// the database
 
-//		System.out.println("le in et le out time: " + ticket1.getInTime() + " " + ticket1.getOutTime()
-//				+ " et le vehicle Reg nb : " + ticket1.getVehicleRegNumber());
-		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao.getUpdatingFareAndOutTimeFromDBTest(false,
-				1);
+		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao
+				.getUpdatingFareAndOutTimeFromDBTest(ticket1);
 		// ASSERT
 		assertTrue(isFareAndOutTimeUpdatedInDB);
 

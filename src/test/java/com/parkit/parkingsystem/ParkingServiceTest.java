@@ -39,20 +39,20 @@ public class ParkingServiceTest {
 		try {
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
-			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-			Ticket ticket = new Ticket();
-
-			LocalDateTime inTime = LocalDateTime.now().minusHours(1);
-			ticket.setInTime(inTime);
-
-			ticket.setParkingSpot(parkingSpot);
-			ticket.setVehicleRegNumber("ABCDEF");
-			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-
-			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
-			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+//			Ticket ticket = new Ticket();
+//
+//			LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+//			ticket.setInTime(inTime);
+//
+//			ticket.setParkingSpot(parkingSpot);
+//			ticket.setVehicleRegNumber("ABCDEF");
+//			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+//			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+//
+//			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+//
+//			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to set up test mock objects");
@@ -61,8 +61,69 @@ public class ParkingServiceTest {
 
 	@Test
 	public void processExitingVehicleTest() {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+		Ticket ticket = new Ticket();
+
+		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
+		ticket.setInTime(inTime);
+
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("ABCDEF");
+		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+
+		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
 		parkingService.processExitingVehicle();
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+	}
+
+	@Test
+	public void processExitingBikeTest() {
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+		Ticket ticket = new Ticket();
+
+		LocalDateTime inTime = LocalDateTime.now().minusMinutes(40);
+		ticket.setInTime(inTime);
+
+		ticket.setParkingSpot(parkingSpot);
+		ticket.setVehicleRegNumber("ABCDEF");
+		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+
+		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+		parkingService.processExitingVehicle();
+		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+	}
+
+	@Test
+	public void processExitingVehicleErrorTypeTest() {
+
+//		ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
+//
+//		Ticket ticket = new Ticket();
+//
+//		LocalDateTime inTime = LocalDateTime.now().minusMinutes(40);
+//		ticket.setInTime(inTime);
+//
+//		ticket.setParkingSpot(parkingSpot);
+//
+//		ticket.setVehicleRegNumber("ABCDEF");
+//
+////		assertNull(parkingSpot.getParkingType());
+//
+//		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+//		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+//		when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+//		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//		parkingService.processExitingVehicle();
+//		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+
 	}
 
 }

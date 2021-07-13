@@ -2,43 +2,37 @@ package com.parkit.parkingsystem.integration.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class DatabasePrepareServiceParkingDao {
 
-	public static final String SAVE_TICKET_TEST = "insert into ticket(PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME) values(?,?,?,?,?)";
-
 	private static final Logger logger = LogManager.getLogger("DatabasePrepareServiceParkingDao");
 
 	private DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
-	public boolean saveAParkingSlot(Ticket ticket) {
+	public boolean getAvailabilityOfAParkingSlot(Ticket ticket) {
 		Connection con = null;
+		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Integer rs = 0;
-		boolean isAvailable = false;
+		boolean isUnavailable = false;
 
 		try {
 			con = dataBaseTestConfig.getConnection();
-			ps = con.prepareStatement(SAVE_TICKET_TEST);
-			ps.setInt(1, ticket.getParkingSpot().getId());
-			ps.setString(2, ticket.getVehicleRegNumber());
-			ps.setDouble(3, ticket.getPrice());
-			ps.setTimestamp(4, Timestamp.valueOf(ticket.getInTime()));
-			ps.setTimestamp(5, Timestamp.valueOf(ticket.getOutTime()));
-
-			rs = ps.executeUpdate();
-			if (rs > 0) {
-				System.out.println("the fare generated and out time are populated correctly in the database");
-//				areTheySaved = true;
-				isAvailable = true;
+			ps = con.prepareStatement(DBConstants.GET_AVAILABILITY_TEST);
+			ps.setString(1, ticket.getVehicleRegNumber());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				if (rs.getBoolean(1) == false) {
+					isUnavailable = true;
+				}
 			}
 		} catch (SQLException sqlEx) {
 			logger.error("Error SQL ", sqlEx.getMessage());
@@ -51,10 +45,11 @@ public class DatabasePrepareServiceParkingDao {
 
 		} finally {
 			dataBaseTestConfig.closePreparedStatement(ps);
+			dataBaseTestConfig.closeResultSet(rs);
 			dataBaseTestConfig.closeConnection(con);
 		}
 
-		return isAvailable;
+		return isUnavailable;
 	}
 
 }

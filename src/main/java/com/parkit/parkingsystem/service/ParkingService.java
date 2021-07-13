@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -52,6 +53,8 @@ public class ParkingService {
 				Ticket ticket = new Ticket();
 				// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 				// ticket.setId(ticketID);
+				// Fetch the last id into database
+				// ticket.setId(parkingSpotDAO.getTheLastIdFromDB() + 1);
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(0);
@@ -78,32 +81,22 @@ public class ParkingService {
 		DataBaseConfig dataBaseConfig = new DataBaseConfig();
 		Connection con = null;
 
-		// connect to database
 		// verify if vehicleRegNumber exists in database
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(
-					// "select t.VEHICLE_REG_NUMBER from ticket t having count(t.VEHICLE_REG_NUMBER)
-					// > 1");
-					// "select count(t.VEHICLE_REG_NUMBER) from ticket t where"
-					// + " t.VEHICLE_REG_NUMBER=''" + vehicleRegNumber + "'");
-					// "select t.VEHICLE_REG_NUMBER from ticket t where t.VEHICLE_REG_NUMBER=" +
-					// vehicleRegNumber);
-
-					"select t.VEHICLE_REG_NUMBER from ticket t where t.VEHICLE_REG_NUMBER='" + vehicleRegNumber + "'");
-
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+			PreparedStatement ps = con.prepareStatement(DBConstants.VERIFY);
+			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				String val = rs.getString(1);
-				if (val.equals(vehicleRegNumber)) {
+				Integer val = rs.getInt(1);
+				if (val > 0) {
 					vehicleRegNumberExists = true;
 				}
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
-			logger.error("Error fetching next available slot : ", ex.getMessage());
+			logger.error("Error fetching next available slot : ", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
