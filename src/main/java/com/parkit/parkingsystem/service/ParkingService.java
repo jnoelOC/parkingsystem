@@ -43,7 +43,7 @@ public class ParkingService {
 				String vehicleRegNumber = getVehichleRegNumber();
 
 				// if true then calculate 5% discount
-				isRecurringCustomer = VerifyExistenceOfVehicleRegNumber(vehicleRegNumber);
+				isRecurringCustomer = verifyExistenceOfVehicleRegNumber(vehicleRegNumber);
 
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
@@ -76,7 +76,7 @@ public class ParkingService {
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
 
-	private boolean VerifyExistenceOfVehicleRegNumber(String vehicleRegNumber) {
+	private boolean verifyExistenceOfVehicleRegNumber(String vehicleRegNumber) {
 		boolean vehicleRegNumberExists = false;
 		DataBaseConfig dataBaseConfig = new DataBaseConfig();
 		Connection con = null;
@@ -151,11 +151,8 @@ public class ParkingService {
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-
 			LocalDateTime outTime = LocalDateTime.now();
-
 			ticket.setOutTime(outTime);
-
 			fareCalculatorService.calculateFare(ticket, isRecurringCustomer);
 
 			if (ticketDAO.updateTicket(ticket)) {
@@ -171,6 +168,8 @@ public class ParkingService {
 				System.out.println("Unable to update ticket information. Error occurred");
 			}
 			return ticket;
+		} catch (NullPointerException npe) {
+			logger.error("Unable to process exiting vehicle : null pointer", npe);
 		} catch (Exception e) {
 			logger.error("Unable to process exiting vehicle", e);
 		}

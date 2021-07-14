@@ -3,7 +3,6 @@ package com.parkit.parkingsystem.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,38 +57,38 @@ public class ParkingSpotDAO {
 		}
 	}
 
-	public Integer getTheLastIdFromDB() {
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
-		Integer val = 0;
-
-		try {
-			con = dataBaseConfig.getConnection();
-			ps = con.prepareStatement(DBConstants.GET_LAST_ID);
-
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				// System.out.println("the ID is populated correctly in the database");
-				// val = rs.getInt(1);
-				val = rs.getRow();
-			}
-		} catch (SQLException sqlEx) {
-			logger.error("Error SQL ", sqlEx);
-
-		} catch (NullPointerException npEx) {
-			logger.error("Error Null pointer ", npEx);
-
-		} catch (Exception ex) {
-			logger.error("Error fetching ", ex);
-
-		} finally {
-			dataBaseConfig.closePreparedStatement(ps);
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closeConnection(con);
-		}
-
-		return val;
-	}
+//	public Integer getTheLastIdFromDB() {
+//		Connection con = null;
+//		ResultSet rs = null;
+//		PreparedStatement ps = null;
+//		Integer val = 0;
+//
+//		try {
+//			con = dataBaseConfig.getConnection();
+//			ps = con.prepareStatement(DBConstants.GET_LAST_ID);
+//
+//			rs = ps.executeQuery();
+//			if (rs.next()) {
+//				// System.out.println("the ID is populated correctly in the database");
+//				// val = rs.getInt(1);
+//				val = rs.getRow();
+//			}
+//		} catch (SQLException sqlEx) {
+//			logger.error("Error SQL ", sqlEx);
+//
+//		} catch (NullPointerException npEx) {
+//			logger.error("Error Null pointer ", npEx);
+//
+//		} catch (Exception ex) {
+//			logger.error("Error fetching ", ex);
+//
+//		} finally {
+//			dataBaseConfig.closePreparedStatement(ps);
+//			dataBaseConfig.closeResultSet(rs);
+//			dataBaseConfig.closeConnection(con);
+//		}
+//
+//		return val;
+//	}
 
 }

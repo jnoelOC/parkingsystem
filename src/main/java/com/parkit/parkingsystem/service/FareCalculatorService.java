@@ -8,6 +8,14 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
+	/*
+	 * * This method allows to calculate fare according to ticket information
+	 * (inTime and outTime, vehicle type).
+	 * 
+	 * @param A Ticket parameter and a boolean parameter indicating if recurring
+	 * customer
+	 * 
+	 */
 	public void calculateFare(Ticket ticket, boolean isRecurringCustomer) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
@@ -18,9 +26,9 @@ public class FareCalculatorService {
 
 		double minutesRatio = 0;
 
-		Duration duration = CalculateTime(inTime, outTime);
+		Duration duration = calculateTime(inTime, outTime);
 
-		double reduction = CalculateReduction(duration, isRecurringCustomer);
+		double reduction = calculateReduction(duration, isRecurringCustomer);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
@@ -44,7 +52,17 @@ public class FareCalculatorService {
 		}
 	}
 
-	public double CalculateReduction(Duration duration, boolean isRecurringCustomer) {
+	/*
+	 * * This method allows to calculate discounts according to a Duration variable.
+	 * 
+	 * @param A Duration parameter and a boolean parameter indicating if recurring
+	 * customer
+	 * 
+	 * @return A double is returned If without reduction thus 1 If under 30 minutes
+	 * then free park thus 0 If recurring customer thus 0.95 (i.e. 5% discount)
+	 * 
+	 */
+	public double calculateReduction(Duration duration, boolean isRecurringCustomer) {
 		// without reduction
 		double reduc = 1;
 		// FreeParkUnder30Minutes
@@ -60,7 +78,15 @@ public class FareCalculatorService {
 		return reduc;
 	}
 
-	public Duration CalculateTime(LocalDateTime inTime, LocalDateTime outTime) {
+	/*
+	 * * This method allows to calculate time between two LocalDateTime variables
+	 * 
+	 * @param Two LocalDateTime parameters
+	 * 
+	 * @return A variable of Duration type is returned
+	 * 
+	 */
+	public Duration calculateTime(LocalDateTime inTime, LocalDateTime outTime) {
 		Duration duration;
 
 		duration = Duration.between(inTime, outTime);
