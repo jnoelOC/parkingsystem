@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -25,8 +27,10 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
+	// to be tested
 	private static ParkingService parkingService;
 
+	// to be mocked
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 	@Mock
@@ -37,7 +41,7 @@ public class ParkingServiceTest {
 	@BeforeEach
 	private void setUpPerTest() {
 		try {
-			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+//			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
 //			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 //			Ticket ticket = new Ticket();
@@ -60,7 +64,9 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingVehicleTest() {
+	public void processExitingVehicleTest() throws Exception {
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		Ticket ticket = new Ticket();
 		LocalDateTime inTime = LocalDateTime.now().minusHours(1);
@@ -77,7 +83,9 @@ public class ParkingServiceTest {
 	}
 
 	@Test
-	public void processExitingBikeTest() {
+	public void processExitingBikeTest() throws Exception {
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 		Ticket ticket = new Ticket();
 		LocalDateTime inTime = LocalDateTime.now().minusMinutes(40);
@@ -91,6 +99,41 @@ public class ParkingServiceTest {
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processExitingVehicle();
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+	}
+
+	@Test
+	public void getVehichleTypeTest_ReturnsBIKE() {
+		// ARRANGE
+		when(inputReaderUtil.readSelection()).thenReturn(2);
+		parkingService = new ParkingService(inputReaderUtil, null, null);
+		// ACT
+		ParkingType ps = parkingService.getVehichleType();
+		// ASSERT
+		assertEquals("BIKE", ps.toString());
+	}
+
+	@Test
+	public void getVehichleTypeTest_ReturnsCAR() {
+		// ARRANGE
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		parkingService = new ParkingService(inputReaderUtil, null, null);
+		// ACT
+		ParkingType ps = parkingService.getVehichleType();
+		// ASSERT
+		assertEquals("CAR", ps.toString());
+	}
+
+	@Test
+	public void getNextParkingNumberIfAvailable_ReturnsAvailable() {
+		// ARRANGE
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(3);
+
+		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		// ACT
+		ParkingSpot ps = parkingService.getNextParkingNumberIfAvailable();
+		// ASSERT
+		assertTrue(ps.isAvailable());
 	}
 
 }
