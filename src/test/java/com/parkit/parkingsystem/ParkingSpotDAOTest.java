@@ -12,6 +12,14 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.ParkingSpot;
 
+/**
+ * This class tests the methods of Parking (getNextAvailableSlotTest and
+ * updateParkingTest).
+ * 
+ * @author jean-noel.chambe
+ *
+ */
+
 public class ParkingSpotDAOTest {
 	private static ParkingSpotDAO parkingSpotDAO;
 	private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
@@ -26,6 +34,9 @@ public class ParkingSpotDAOTest {
 	private void setUpPerTest() {
 	}
 
+	/**
+	 * This method tests the next available slot
+	 */
 	@Test
 	public void getNextAvailableSlotTest() {
 		// ARRANGE
@@ -37,6 +48,9 @@ public class ParkingSpotDAOTest {
 		assertNotNull(nb);
 	}
 
+	/**
+	 * This method tests updating of parking spot.
+	 */
 	@Test
 	public void updateParkingTest() {
 		// ARRANGE

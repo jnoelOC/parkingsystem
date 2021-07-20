@@ -15,6 +15,13 @@ import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * 
+ * This class tests the accesses of ticket (get, update, save).
+ * 
+ * @author jean-noel.chambe
+ *
+ */
 public class TicketDAOTest {
 	private static TicketDAO ticketDAO;
 	private Ticket ticket;
@@ -32,6 +39,9 @@ public class TicketDAOTest {
 		ticket = new Ticket();
 	}
 
+	/**
+	 * this method tests the saving of ticket in test database
+	 */
 	@Test
 	public void saveTicketTest() {
 		// ARRANGE
@@ -49,6 +59,9 @@ public class TicketDAOTest {
 		assertTrue(ret);
 	}
 
+	/**
+	 * this method tests the getting of ticket from test database
+	 */
 	@Test
 	public void getTicketTest() {
 		// ARRANGE
@@ -59,6 +72,9 @@ public class TicketDAOTest {
 		assertNotNull(ticket);
 	}
 
+	/**
+	 * this method tests the updating of ticket in test database
+	 */
 	@Test
 	public void updateTicketTest() {
 		// ARRANGE

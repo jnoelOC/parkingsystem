@@ -24,6 +24,15 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * 
+ * This class tests in unitary manner the Parking service (incoming and exiting
+ * vehicle).
+ * 
+ * @author jean-noel.chambe
+ *
+ */
+
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
@@ -63,6 +72,12 @@ public class ParkingServiceTest {
 		}
 	}
 
+	/**
+	 * this method tests processing exiting vehicle
+	 * 
+	 * @throws Exception
+	 */
+
 	@Test
 	public void processExitingVehicleTest() throws Exception {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -82,6 +97,11 @@ public class ParkingServiceTest {
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
 
+	/**
+	 * this method tests processing an exiting bike
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void processExitingBikeTest() throws Exception {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -101,6 +121,9 @@ public class ParkingServiceTest {
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
 
+	/**
+	 * this method tests in unitary manner the getting of vehicle type, there BIKE.
+	 */
 	@Test
 	public void getVehichleTypeTest_ReturnsBIKE() {
 		// ARRANGE
@@ -112,6 +135,9 @@ public class ParkingServiceTest {
 		assertEquals("BIKE", ps.toString());
 	}
 
+	/**
+	 * this method tests in unitary manner the getting of vehicle type, there CAR.
+	 */
 	@Test
 	public void getVehichleTypeTest_ReturnsCAR() {
 		// ARRANGE
@@ -123,6 +149,10 @@ public class ParkingServiceTest {
 		assertEquals("CAR", ps.toString());
 	}
 
+	/**
+	 * this method tests, in unitary manner, the getting of availability of next
+	 * parking number, there true.
+	 */
 	@Test
 	public void getNextParkingNumberIfAvailable_ReturnsAvailable() {
 		// ARRANGE

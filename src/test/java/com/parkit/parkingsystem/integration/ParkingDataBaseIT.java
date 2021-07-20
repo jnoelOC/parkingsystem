@@ -24,6 +24,14 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * 
+ * This class tests the accesses of parking.
+ * 
+ * @author jean-noel.chambe
+ *
+ */
+
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
 public class ParkingDataBaseIT {
@@ -66,6 +74,9 @@ public class ParkingDataBaseIT {
 
 	}
 
+	/**
+	 * This method tests the availability of a parking slot
+	 */
 	@Test
 	public void testParkingACar() {
 		// ARRANGE
@@ -84,6 +95,9 @@ public class ParkingDataBaseIT {
 		assertTrue(isAvailabilitySavedInDB);
 	}
 
+	/**
+	 * This method tests the updating of fare and outTime in test database
+	 */
 	@Test
 	public void testParkingLotExit() {
 		// ARRANGE

@@ -23,6 +23,14 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 
+/**
+ * 
+ * This class permits to make unitary tests (and parameterized tests) on fare
+ * calculator
+ * 
+ * @author jean-noel.chambe
+ *
+ */
 public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
@@ -38,6 +46,9 @@ public class FareCalculatorServiceTest {
 		ticket = new Ticket();
 	}
 
+	/**
+	 * This method calculates fare for a car
+	 */
 	@Test
 	public void calculateFareCar() {
 
@@ -57,6 +68,9 @@ public class FareCalculatorServiceTest {
 		assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
 	}
 
+	/**
+	 * This method calculates fare for a bike
+	 */
 	@Test
 	public void calculateFareBike() {
 
@@ -75,6 +89,9 @@ public class FareCalculatorServiceTest {
 		assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR);
 	}
 
+	/**
+	 * This method calculates fare for unknown vehicle type
+	 */
 	@Test
 	public void calculateFareUnkownType() {
 		// Date inTime = new Date();
@@ -90,6 +107,9 @@ public class FareCalculatorServiceTest {
 		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket, false));
 	}
 
+	/**
+	 * This method calculates fare for a bike with a wrong time
+	 */
 	@Test
 	public void calculateFareBikeWithFutureInTime() {
 		// Date inTime = new Date();
@@ -105,6 +125,9 @@ public class FareCalculatorServiceTest {
 		assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket, false));
 	}
 
+	/**
+	 * This method calculates fare for a bike with less than one hour parking time
+	 */
 	@Test
 	public void calculateFareBikeWithLessThanOneHourParkingTime() {
 		// Date inTime = new Date();
@@ -123,6 +146,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0.75 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a car with less than one hour parking time
+	 */
 	@Test
 	public void calculateFareCarWithLessThanOneHourParkingTime() {
 		// Date inTime = new Date();
@@ -141,6 +167,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0.75 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a car with plus than one day parking time
+	 */
 	@Test
 	public void calculateFareCarWithMoreThanADayParkingTime() {
 		// Date inTime = new Date();
@@ -161,6 +190,10 @@ public class FareCalculatorServiceTest {
 
 	///////////////////////////// My Tests
 
+	/**
+	 * This method calculates fare for a not recurring bike with less than 30
+	 * minutes parking time
+	 */
 	@Test
 	public void calculateFreeFareNotRecurringBikeWithLessThan30MinutesParkingTime() {
 
@@ -176,6 +209,10 @@ public class FareCalculatorServiceTest {
 		assertEquals((0 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a not recurring car with less than 30 minutes
+	 * parking time
+	 */
 	@Test
 	public void calculateFreeFareNotRecurringCarWithLessThan30MinutesParkingTime() {
 
@@ -191,6 +228,10 @@ public class FareCalculatorServiceTest {
 		assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a recurring bike with less than 30 minutes
+	 * parking time
+	 */
 	@Test
 	public void calculateFreeFareRecurringBikeWithLessThan30MinutesParkingTime() {
 
@@ -206,6 +247,10 @@ public class FareCalculatorServiceTest {
 		assertEquals((0 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a recurring car with less than 30 minutes
+	 * parking time
+	 */
 	@Test
 	public void calculateFreeFareRecurringCarWithLessThan30MinutesParkingTime() {
 
@@ -221,6 +266,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a bike with 30 minutes parking time
+	 */
 	@Test
 	public void calculateFreeFareBikeWith30MinutesParkingTime() {
 
@@ -236,6 +284,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0.5 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a car with 30 minutes parking time
+	 */
 	@Test
 	public void calculateFreeFareCarWith30MinutesParkingTime() {
 
@@ -251,6 +302,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0.5 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a recurring car with 5% discount
+	 */
 	@Test
 	public void calculateFareRecurringCarWith5PercentDiscount() {
 
@@ -268,6 +322,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((9.5 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a recurring bike with 5% discount
+	 */
 	@Test
 	public void calculateFareRecurringBikeWith5PercentDiscount() {
 
@@ -283,6 +340,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((0.95 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a not recurring car without 5% discount
+	 */
 	@Test
 	public void calculateFareNotRecurringCarWithout5PercentDiscount() {
 
@@ -299,6 +359,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((10 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a not recurring bike without 5% discount
+	 */
 	@Test
 	public void calculateFareNotRecurringBikeWithout5PercentDiscount() {
 
@@ -316,6 +379,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((1 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a not recurring car with a great time
+	 */
 	@Test
 	public void calculateFareNotRecurringCarWithGreatTime() {
 
@@ -332,6 +398,9 @@ public class FareCalculatorServiceTest {
 		assertEquals((1.7531639991215E13 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
 	}
 
+	/**
+	 * This method calculates fare for a not recurring bike with a great time
+	 */
 	@Test
 	public void calculateFareNotRecurringBikeWithGreatTime() {
 
@@ -351,6 +420,9 @@ public class FareCalculatorServiceTest {
 	//////////////////////////////////////////////////////////
 	//////////// MY PARAMETERIZED TESTS : calculateReduction()
 
+	/**
+	 * This method calculates fare without reduction for different values
+	 */
 	@ParameterizedTest
 	@MethodSource("durationAndBooleanReturn1WithoutReduction")
 	public void CalculateReductionTest_ShouldReturn1(Duration duration, boolean isRecurringCustomer) {
@@ -364,6 +436,10 @@ public class FareCalculatorServiceTest {
 				Arguments.of(Duration.ofHours(10), false), Arguments.of(Duration.ofHours(Integer.MAX_VALUE), false));
 	}
 
+	/**
+	 * This method calculates fare with reduction of free park under 30 minutes for
+	 * different values
+	 */
 	@ParameterizedTest
 	@MethodSource("durationAndBooleanReturn0WithFreeParkUnder30Min")
 	public void CalculateReductionTest_ShouldReturn0(Duration duration, boolean isRecurringCustomer) {
@@ -377,6 +453,10 @@ public class FareCalculatorServiceTest {
 				Arguments.of(Duration.ZERO, false), Arguments.of(Duration.ofHours(Integer.MIN_VALUE), false));
 	}
 
+	/**
+	 * This method calculates fare with reduction of 5% discount for different
+	 * values
+	 */
 	@ParameterizedTest
 	@MethodSource("durationAndBooleanReturn095With5PercentDiscount")
 	public void CalculateReductionTest_ShouldReturn095(Duration duration, boolean isRecurringCustomer) {
@@ -391,6 +471,9 @@ public class FareCalculatorServiceTest {
 	}
 	//////////// MY PARAMETERIZED TESTS : calculateTime()
 
+	/**
+	 * This method calculates time with return 0 for different values
+	 */
 	@ParameterizedTest
 	@MethodSource("LocalDateTime1")
 	public void CalculateTimeTest_ShouldReturn0Time(LocalDateTime ldt1, LocalDateTime ldt2) {
@@ -407,6 +490,9 @@ public class FareCalculatorServiceTest {
 				Arguments.of(LocalDateTime.MIN, LocalDateTime.MIN), Arguments.of(LocalDateTime.MAX, LocalDateTime.MAX));
 	}
 
+	/**
+	 * This method calculates time with negative return for different values
+	 */
 	@ParameterizedTest
 	@MethodSource("LocalDateTime2")
 	public void CalculateTimeTest_ShouldReturnNegativeTime(LocalDateTime ldt1, LocalDateTime ldt2) {
