@@ -12,11 +12,25 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 
+/**
+ * This class realizes the link between Parking data objects and database by SQL
+ * requests.
+ * 
+ * @author jean-noel.chambe
+ *
+ */
 public class ParkingSpotDAO {
 	private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * 
+	 * This method permits to get next available slot
+	 * 
+	 * @param ParkingType parkingType
+	 * @return integer result
+	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;
 		int result = -1;
@@ -38,6 +52,11 @@ public class ParkingSpotDAO {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param ParkingSpot parkingSpot
+	 * @return boolean (true if updateRowCount == 1)
+	 */
 	public boolean updateParking(ParkingSpot parkingSpot) {
 		// update the availability fo that parking slot
 		Connection con = null;

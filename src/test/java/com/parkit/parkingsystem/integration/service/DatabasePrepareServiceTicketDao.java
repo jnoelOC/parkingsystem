@@ -15,12 +15,26 @@ import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * 
+ * Service of preparation of database for TicketDAO. Instancing a
+ * dataBaseTestConfig
+ * 
+ **/
 public class DatabasePrepareServiceTicketDao {
 
 	private static final Logger logger = LogManager.getLogger("DatabasePrepareServiceTicketDao");
 
 	private DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
+	/**
+	 * Get a ticket from test database
+	 * 
+	 * @param String vehicleRegNumber
+	 * 
+	 * @return Ticket ticket
+	 * 
+	 */
 	public Ticket getATicketFromDBTest(String vehicleRegNumber) {
 
 		Connection con = null;
@@ -60,6 +74,14 @@ public class DatabasePrepareServiceTicketDao {
 		return ticket;
 	}
 
+	/**
+	 * Get a updating fare and outTime from test database
+	 * 
+	 * @param Ticket ticket
+	 * 
+	 * @return boolean areTheyUpdated
+	 * 
+	 */
 	public boolean getUpdatingFareAndOutTimeFromDBTest(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;

@@ -17,6 +17,12 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * This class processes the incoming and exiting vehicle
+ * 
+ * @author jean-noel.chambe
+ *
+ */
 public class ParkingService {
 
 	private static final Logger logger = LogManager.getLogger("ParkingService");
@@ -36,6 +42,10 @@ public class ParkingService {
 		this.ticketDAO = ticketDAO;
 	}
 
+	/**
+	 * This method processes incoming vehicle.
+	 *
+	 */
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -71,11 +81,25 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * 
+	 * This method read to keyboard the vehicle registration number.
+	 * 
+	 * @return string VehicleRegistrationNumber
+	 * @throws Exception
+	 */
 	private String getVehichleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
 
+	/**
+	 * This method checks the existence of vehicle registration number in database.
+	 * It displays too a message for recurring customers if it needs
+	 * 
+	 * @param String vehicleRegNumber
+	 * @return boolean vehicleRegNumberExists
+	 */
 	private boolean verifyExistenceOfVehicleRegNumber(String vehicleRegNumber) {
 		boolean vehicleRegNumberExists = false;
 		DataBaseConfig dataBaseConfig = new DataBaseConfig();
@@ -109,6 +133,12 @@ public class ParkingService {
 		return vehicleRegNumberExists;
 	}
 
+	/**
+	 * 
+	 * This method gets next parking number if available
+	 * 
+	 * @return ParkingSpot parkingSpot
+	 */
 	public ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
@@ -128,6 +158,12 @@ public class ParkingService {
 		return parkingSpot;
 	}
 
+	/**
+	 * 
+	 * This method gets vehicle type (CAR or BIKE).
+	 * 
+	 * @return ParkingType
+	 */
 	public ParkingType getVehichleType() {
 		System.out.println("Please select vehicle type from menu");
 		System.out.println("1 CAR");
@@ -147,6 +183,12 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * 
+	 * This method processes exiting vehicle.
+	 * 
+	 * @return Ticket ticket
+	 */
 	public Ticket processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();

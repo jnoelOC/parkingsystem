@@ -12,12 +12,25 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * 
+ * Service of preparation of database for ParkingDAO. Instancing a
+ * dataBaseTestConfig
+ * 
+ **/
 public class DatabasePrepareServiceParkingDao {
 
 	private static final Logger logger = LogManager.getLogger("DatabasePrepareServiceParkingDao");
 
 	private DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
+	/**
+	 * Get availability of a parking slot
+	 * 
+	 * @param Ticket ticket
+	 * 
+	 * @return boolean isUnavailable
+	 */
 	public boolean getAvailabilityOfAParkingSlot(Ticket ticket) {
 		Connection con = null;
 		ResultSet rs = null;

@@ -38,6 +38,7 @@ public class ParkingDataBaseIT {
 	// To be tested
 	private ParkingService parkingService;
 
+	// To be mocked
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 

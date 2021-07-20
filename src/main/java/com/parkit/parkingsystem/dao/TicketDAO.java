@@ -15,12 +15,26 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * This class realizes the link between Ticket data objects and database by SQL
+ * requests.
+ * 
+ * @author jean-noel.chambe
+ *
+ */
 public class TicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * 
+	 * This method allows saving ticket in database
+	 * 
+	 * @param Ticket ticket
+	 * @return boolean ret
+	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		boolean ret = false;
@@ -50,6 +64,13 @@ public class TicketDAO {
 
 	}
 
+	/**
+	 * 
+	 * This method allows getting ticket by providing a vehicle registration number.
+	 * 
+	 * @param String vehicleRegNumber
+	 * @return Ticket ticket
+	 */
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -90,6 +111,13 @@ public class TicketDAO {
 
 	}
 
+	/**
+	 * 
+	 * This method allows updating ticket data (price and outTime)
+	 * 
+	 * @param Ticket ticket
+	 * @return boolean at true
+	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;

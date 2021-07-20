@@ -6,6 +6,14 @@ import java.time.LocalDateTime;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * 
+ * This class realize the computation of parking fare, with reduction or not.
+ * 
+ * @author jean-noel.chambe
+ * 
+ */
+
 public class FareCalculatorService {
 
 	/*
