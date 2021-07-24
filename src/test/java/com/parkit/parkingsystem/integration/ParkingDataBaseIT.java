@@ -83,11 +83,10 @@ public class ParkingDataBaseIT {
 
 		// ACT
 		parkingService.processIncomingVehicle();
-		// DONE: check that a ticket is actually saved in DB and Parking table is
+		// check that a ticket is actually saved in DB and Parking table is
 		// updated with availability
 
 		Ticket ticket = databasePrepareServiceTicketDao.getATicketFromDBTest("ABCDEF");
-
 		boolean isAvailabilitySavedInDB = databasePrepareServiceParkingDao.getAvailabilityOfAParkingSlot(ticket);
 
 		// ASSERT
@@ -104,7 +103,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 		// ACT
 		Ticket ticket1 = parkingService.processExitingVehicle();
-		// DONE: check that the fare generated and out time are populated correctly in
+		// check that the fare generated and out time are populated correctly in
 		// the database
 
 		boolean isFareAndOutTimeUpdatedInDB = databasePrepareServiceTicketDao

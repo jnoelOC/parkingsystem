@@ -56,13 +56,6 @@
 		    <version>5.7.0</version>
 		    <scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine 
-		<dependency>
-		    <groupId>org.junit.vintage</groupId>
-		    <artifactId>junit-vintage-engine</artifactId>
-		    <version>5.7.0</version>
-		    <scope>test</scope>
-		</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
 		<dependency>
 		    <groupId>org.assertj</groupId>
@@ -70,7 +63,6 @@
 		    <version>3.13.2</version>
 		    <scope>test</scope>
 		</dependency>
-
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -86,6 +78,21 @@
 
     <build>
         <plugins>
+            <plugin>
+		      <!-- Build an executable JAR -->
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-jar-plugin</artifactId>
+		      <version>3.1.0</version>
+		      <configuration>
+		        <archive>
+		          <manifest>
+		            <addClasspath>true</addClasspath>
+		            <classpathPrefix>lib/</classpathPrefix>
+		            <mainClass>com.parkit.parkingsystem.App</mainClass>
+		          </manifest>
+		        </archive>
+		      </configuration>
+		    </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -216,9 +223,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M4</version>
+				<version>3.0.0-M5</version>
 				<configuration>
-					<aggregate>true</aggregate>
+					<!-- <aggregate>true</aggregate> -->
 				</configuration>
 			</plugin>
 			<plugin>

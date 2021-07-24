@@ -122,7 +122,7 @@ public class ParkingServiceTest {
 	}
 
 	/**
-	 * this method tests in unitary manner the getting of vehicle type, there BIKE.
+	 * this method tests the getting of vehicle type, there BIKE.
 	 */
 	@Test
 	public void getVehichleTypeTest_ReturnsBIKE() {
@@ -136,7 +136,7 @@ public class ParkingServiceTest {
 	}
 
 	/**
-	 * this method tests in unitary manner the getting of vehicle type, there CAR.
+	 * this method tests the getting of vehicle type, there CAR.
 	 */
 	@Test
 	public void getVehichleTypeTest_ReturnsCAR() {
@@ -150,8 +150,8 @@ public class ParkingServiceTest {
 	}
 
 	/**
-	 * this method tests, in unitary manner, the getting of availability of next
-	 * parking number, there true.
+	 * this method tests the getting of availability of next parking number, there
+	 * true.
 	 */
 	@Test
 	public void getNextParkingNumberIfAvailable_ReturnsAvailable() {
