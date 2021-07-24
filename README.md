@@ -45,6 +45,12 @@ Finally, you will be ready to import the code into an IDE of your choice and run
 Moreover, We can run the application with this command in PowerShell in a folder of its choice :
 java -jar parking-system-1.0-SNAPSHOT-jar-with-dependencies.jar
 
+### Build
+
+The build will do with this command :
+
+`mvn clean install`
+
 ### Testing
 
 The app has unit tests and integration tests written. More of these need to be added and in some places that can be seen mentioend as `TODO` comments. The existing tests need to be triggered from maven-surefire plugin while we try to generate the final executable jar file.
